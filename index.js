@@ -3,36 +3,24 @@ const gql = require('graphql-tag');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 
-const Post = require('./models/Post');
+const typeDefs = require('./graphql/typeDefs');
+const resolvers = require('./graphql/resolvers');
 
 dotenv.config();
 
  const PORT = process.env.PORT;
  const CONNECTION_URL = process.env.CONNECTION_URL;
-const typeDefs = gql`
-type Post {
-id: ID!
-body: String!,
-createdAt: String!,
-username: String!
-}
-  type Query{
-  getPosts: [Post]
-  }
-`;
-
-const resolvers = {
-  Query: {
-     async getPosts() {
-          try{
-              const posts = await Post.find();
-              return posts;
-          } catch (err) {
-              throw new Error(err);
-          }
-      }
-  }
-};
+// const typeDefs = gql`
+// type Post {
+// id: ID!
+// body: String!,
+// createdAt: String!,
+// username: String!
+// }
+//   type Query{
+//   getPosts: [Post]
+//   }
+// `;
 
 const server = new ApolloServer({
     typeDefs,
