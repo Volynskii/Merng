@@ -88,6 +88,7 @@ throw new UserInputError('Username is taken',{
                 id: res._id,
                 token
             };
-        }
+        },
+
     }
 };
