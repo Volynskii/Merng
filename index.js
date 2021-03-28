@@ -1,4 +1,4 @@
-const { ApolloServer } = require('apollo-server');
+const { ApolloServer,PubSub } = require('apollo-server');
 const gql = require('graphql-tag');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
@@ -11,11 +11,12 @@ dotenv.config();
  const PORT = process.env.PORT;
  const CONNECTION_URL = process.env.CONNECTION_URL;
 
+const pubsub = new PubSub();
 
 const server = new ApolloServer({
     typeDefs,
     resolvers,
-    context: ({req}) => ({req})
+    context: ({req}) => ({req,pubsub})
 });
 
 mongoose.connect(CONNECTION_URL, { useNewUrlParser: true, useUnifiedTopology: true })
