@@ -4,7 +4,7 @@ import gql from 'graphql-tag';
 import { Grid } from 'semantic-ui-react';
 
 import PostCard from '../components/PostCard';
-
+console.log()
 function Home() {
     const {
         loading,
