@@ -10,7 +10,7 @@ dotenv.config();
 
  const PORT = process.env.PORT;
  const CONNECTION_URL = process.env.CONNECTION_URL;
-
+console.log(process.env.CONNECTION_URL)
 const pubsub = new PubSub();
 
 const server = new ApolloServer({

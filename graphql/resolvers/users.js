@@ -15,12 +15,13 @@ function generateToken(user) {
         id: user.id,
         email: user.email,
         username: user.username
-    },SECRET,{expiresIn:'1h'});
+    },SECRET,{expiresIn:'3h'});
 }
 
 module.exports = {
     Mutation: {
         async login(_,{username,password}) {
+            console.log(username,password)
 const {errors,valid} = validateLoginInput(username,password);
 
 if(!valid) {
@@ -80,7 +81,7 @@ throw new UserInputError('Username is taken',{
             });
 
             const res = await newUser.save();
-
+console.log('res', res)
             const token = generateToken(res)
 
             return {

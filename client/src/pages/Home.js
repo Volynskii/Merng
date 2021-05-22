@@ -12,8 +12,10 @@ function Home() {
     const {
         loading,
         data: { getPosts: posts }
-    } = useQuery(FETCH_POSTS_QUERY);
-
+    } = useQuery(FETCH_POSTS_QUERY,{
+        pollInterval: 500,
+    });
+console.log(posts)
     return (
         <Grid columns={3}>
             <Grid.Row className="page-title">

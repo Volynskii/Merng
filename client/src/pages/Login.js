@@ -8,6 +8,7 @@ import { useForm } from '../util/hooks';
 
 function Login(props) {
     const context = useContext(AuthContext);
+    console.log('AuthContext',AuthContext)
     const [errors, setErrors] = useState({});
 
     const { onChange, onSubmit, values } = useForm(loginUserCallback, {
@@ -25,6 +26,7 @@ function Login(props) {
         },
         variables: values
     });
+
 
     function loginUserCallback() {
         loginUser();
