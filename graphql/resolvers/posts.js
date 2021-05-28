@@ -24,9 +24,24 @@ module.exports = {
             } catch (err) {
                 throw new Error(err);
             }
-        }
+        },
+
     },
     Mutation: {
+        async replyComment(_,{newReply,postId,commentId}, context ) {
+            try {
+                const post = await Post.findById(postId)
+                const comment = post.comments.find(comment => comment.id === commentId)
+
+                comment.replies.push(newReply)
+                 console.log(comment.replies)
+                   await post.save();
+                return comment;
+            }
+            catch (err) {
+                throw new Error(err);
+            }
+        },
         async createPost(_, { body }, context) {
             const user = checkAuth(context);
 
@@ -49,6 +64,7 @@ module.exports = {
 
             return post;
         },
+
         async deletePost(_, { postId }, context) {
             const user = checkAuth(context);
 

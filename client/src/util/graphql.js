@@ -5,6 +5,7 @@ export const FETCH_POSTS_QUERY = gql`
     getPosts {
       id
       body
+      test
       createdAt
       username
       likeCount
@@ -17,7 +18,9 @@ export const FETCH_POSTS_QUERY = gql`
         username
         createdAt
         body
+     replies
       }
+      
     }
   }
 `;

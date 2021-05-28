@@ -4,18 +4,22 @@ module.exports = gql`
 type Post {
 id: ID!
 body: String!,
+test: String,
 createdAt: String!,
 username: String!
 comments: [Comment]!
 likes: [Like]!
 likeCount: Int!
 commentCount:  Int!
+replies: [String]
 }
+
 type Comment{
 id: ID!
 createdAt: String!
 username: String!
 body: String!
+replies: [String]
 }
 type Like{
 id: ID!
@@ -38,11 +42,13 @@ email: String!
   type Query{
   getPosts: [Post]
   getPost(postId: ID!): Post
+  replyComment(newReply: String!,postId: ID!,commentId: ID!): Post
   }
   type Mutation{
   register(registerInput: RegisterInput): User!
   login(username: String!,password: String!): User!
   createPost(body: String!): Post!
+  replyComment(newReply: String!,postId: ID!,commentId: ID!): Post
   deletePost(postId: ID!): String!
   createComment(postId: String!, body: String!): Post!
   deleteComment(postId: ID!,commentId: ID!): Post!

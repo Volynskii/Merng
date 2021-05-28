@@ -1,6 +1,7 @@
 import React, { useContext, useState, useRef } from 'react';
 import gql from 'graphql-tag';
 import { useQuery, useMutation } from '@apollo/react-hooks';
+import './SinglePost.scss';
 import moment from 'moment';
 import {
     Button,
@@ -20,7 +21,13 @@ function SinglePost(props) {
     const postId = props.match.params.postId;
     const { user } = useContext(AuthContext);
     const commentInputRef = useRef(null);
+    const replyRef = useRef(null);
+    const currentReply = replyRef.current;
 
+     const neededValue = currentReply !== null ? currentReply.innerText : null;
+     console.log(neededValue)
+    const [spanValue,setSpanValue] = useState('');
+     console.log(spanValue)
     const [comment, setComment] = useState('');
 
     const {
@@ -41,11 +48,23 @@ function SinglePost(props) {
             body: comment
         }
     });
+    const [submitReply] = useMutation(REPLY_COMMENT_MUTATION, {
+        update() {
+            // setComment('');
+            // commentInputRef.current.blur();
+        },
+        variables: {
+            newReply: 'a',
+            postId,
+            commentId:"60aa236a810aa209384ddcc7"
 
+        }
+    });
     function deletePostCallback() {
         props.history.push('/');
     }
-
+    const [open,setOpen] = useState(false)
+console.log('open?',open)
     let postMarkup;
     if (!getPost) {
         postMarkup = <p>Loading post..</p>;
@@ -61,6 +80,7 @@ function SinglePost(props) {
             commentCount
         } = getPost;
 
+console.log('comments', comments)
         postMarkup = (
             <Grid>
                 <Grid.Row>
@@ -78,23 +98,23 @@ function SinglePost(props) {
                                 <Card.Meta>{moment(createdAt).fromNow()}</Card.Meta>
                                 <Card.Description>{body}</Card.Description>
                             </Card.Content>
-                            <hr />
+                            <hr/>
                             <Card.Content extra>
-                                <LikeButton user={user} post={{ id, likeCount, likes }} />
+                                <LikeButton user={user} post={{id, likeCount, likes}}/>
                                 <Button
                                     as="div"
                                     labelPosition="right"
                                     onClick={() => console.log('Comment on post')}
                                 >
                                     <Button basic color="blue">
-                                        <Icon name="comments" />
+                                        <Icon name="comments"/>
                                     </Button>
                                     <Label basic color="blue" pointing="left">
                                         {commentCount}
                                     </Label>
                                 </Button>
                                 {user && user.username === username && (
-                                    <DeleteButton postId={id} callback={deletePostCallback} />
+                                    <DeleteButton postId={id} callback={deletePostCallback}/>
                                 )}
                             </Card.Content>
                         </Card>
@@ -129,11 +149,49 @@ function SinglePost(props) {
                             <Card fluid key={comment.id}>
                                 <Card.Content>
                                     {user && user.username === comment.username && (
-                                        <DeleteButton postId={id} commentId={comment.id} />
+                                        <DeleteButton postId={id} commentId={comment.id}/>
                                     )}
                                     <Card.Header>{comment.username}</Card.Header>
-                                    <Card.Meta>{moment(comment.createdAt).fromNow()}</Card.Meta>
+                                    <Card.Meta style={{display: 'flex'}}>
+                                        <div>{moment(comment.createdAt).fromNow()}</div>
+                                        <button className="reply-button"
+                                                onClick={() => setOpen(!open)}>{open ? 'Cancel' : 'Reply'}</button>
+                                    </Card.Meta>
+
                                     <Card.Description>{comment.body}</Card.Description>
+                                    {comment.replies && (
+                                        comment.replies.map((reply,index) => (
+                                            <div key={index}>{reply}</div>
+                                        ))
+                                    )}
+                                    <p style={open ? {} : {display: 'none'}} className="reply-text">Reply
+                                        to {comment.username}</p>
+
+                                    <p style={{display: 'flex',alignItems: 'flex-end'}}><span ref={replyRef} className="textarea answer-input" role="textbox"
+                                             style={open ? {} : {display: 'none'}}
+                                             contentEditable onChange={(event) => setSpanValue('123')} />
+                                        <button
+                                            style={open ? {} : {display: 'none'}}
+                                            type="submit"
+                                            className="ui button teal"
+                                            // disabled={comment.trim() === ''}
+                                            onClick={
+                                                (event) => {
+                                                    setSpanValue(event.currentTarget.previousElementSibling.textContent)
+                                                    submitReply()
+                                                }
+                                                }
+
+                                                // setSpanValue(event.currentTarget.previousElementSibling.textContent)
+                                                // event.currentTarget.previousElementSibling.textContent = ''
+                                            // }
+
+                                        >
+                                            Submit
+                                        </button>
+                                    </p>
+
+
                                 </Card.Content>
                             </Card>
                         ))}
@@ -154,12 +212,19 @@ const SUBMIT_COMMENT_MUTATION = gql`
         body
         createdAt
         username
+       
       }
       commentCount
     }
   }
 `;
-
+const REPLY_COMMENT_MUTATION = gql`
+mutation($newReply: String!,$postId: ID!,$commentId: ID!) {
+replyComment(newReply:$newReply,postId:$postId,commentId:$commentId) {
+ replies  
+}
+}
+`
 const FETCH_POST_QUERY = gql`
   query($postId: ID!) {
     getPost(postId: $postId) {
@@ -177,6 +242,7 @@ const FETCH_POST_QUERY = gql`
         username
         createdAt
         body
+     replies
       }
     }
   }

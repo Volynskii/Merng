@@ -1,0 +1,88 @@
+button {
+  background-color: transparent;
+  border:0;
+  cursor: pointer;
+}
+
+
+
+input:focus {
+  outline: 2px solid darkgrey;
+}
+
+.reply-text {
+  margin-top: 10px;
+  padding-left: 20px;
+  //font-weight: bold;
+  text-decoration: underline;
+}
+
+.reply-button {
+  text-decoration: underline;
+  font-weight: bold;
+}
+
+
+
+.input,
+.textarea {
+  border: 1px solid #ccc;
+  font-family: inherit;
+  font-size: inherit;
+  //padding: 1px 6px;
+
+}
+
+.input-wrap {
+  position: relative;
+}
+.input-wrap .input {
+  position: absolute;
+  width: 100%;
+  left: 0;
+}
+.width-machine {
+  /*   Sort of a magic number to add extra space for number spinner */
+  padding: 0 1rem;
+}
+
+.textarea {
+  display: block;
+  width: 300px;
+  overflow: hidden;
+  resize: both;
+  min-height: 40px;
+  line-height: 20px;
+}
+
+.textarea[contenteditable]:empty::before {
+  content: "Placeholder still possible";
+  color: gray;
+}
+
+/* Just for demo */
+* {
+  box-sizing: border-box;
+}
+body {
+  font-family: "Heebo", sans-serif;
+
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+p strong {
+  display: block;
+}
+h1 {
+  border-bottom: 5px solid #9ccc65;
+}
+h2 {
+  border-bottom: 2px solid #c5e1a5;
+}
+
+.answer-input {
+  margin-left: 20px;
+  padding: 1px 6px;
+}
+
