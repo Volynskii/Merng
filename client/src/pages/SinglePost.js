@@ -24,15 +24,16 @@ function SinglePost(props) {
     const replyRef = useRef(null);
     const currentReply = replyRef.current;
 
-     const neededValue = currentReply !== null ? currentReply.innerText : null;
-     console.log(neededValue)
+    const neededValue = currentReply !== null ? currentReply.innerText : null;
+    console.log(neededValue)
     const [spanValue,setSpanValue] = useState('');
-     console.log(spanValue)
+    console.log(spanValue)
     const [comment, setComment] = useState('');
 
     const {
         data: { getPost }
     } = useQuery(FETCH_POST_QUERY, {
+        pollInterval: 500,
         variables: {
             postId
         }
@@ -56,7 +57,7 @@ function SinglePost(props) {
         variables: {
             newReply: 'a',
             postId,
-            commentId:"60aa236a810aa209384ddcc7"
+            commentId:"60b109a272efc453e47eee49"
 
         }
     });
@@ -64,7 +65,7 @@ function SinglePost(props) {
         props.history.push('/');
     }
     const [open,setOpen] = useState(false)
-console.log('open?',open)
+    console.log('open?',open)
     let postMarkup;
     if (!getPost) {
         postMarkup = <p>Loading post..</p>;
@@ -80,7 +81,7 @@ console.log('open?',open)
             commentCount
         } = getPost;
 
-console.log('comments', comments)
+        console.log('comments', comments)
         postMarkup = (
             <Grid>
                 <Grid.Row>
@@ -168,8 +169,8 @@ console.log('comments', comments)
                                         to {comment.username}</p>
 
                                     <p style={{display: 'flex',alignItems: 'flex-end'}}><span ref={replyRef} className="textarea answer-input" role="textbox"
-                                             style={open ? {} : {display: 'none'}}
-                                             contentEditable onChange={(event) => setSpanValue('123')} />
+                                                                                              style={open ? {} : {display: 'none'}}
+                                                                                              contentEditable onChange={(event) => setSpanValue('123')} />
                                         <button
                                             style={open ? {} : {display: 'none'}}
                                             type="submit"
@@ -180,10 +181,10 @@ console.log('comments', comments)
                                                     setSpanValue(event.currentTarget.previousElementSibling.textContent)
                                                     submitReply()
                                                 }
-                                                }
+                                            }
 
-                                                // setSpanValue(event.currentTarget.previousElementSibling.textContent)
-                                                // event.currentTarget.previousElementSibling.textContent = ''
+                                            // setSpanValue(event.currentTarget.previousElementSibling.textContent)
+                                            // event.currentTarget.previousElementSibling.textContent = ''
                                             // }
 
                                         >
@@ -212,18 +213,19 @@ const SUBMIT_COMMENT_MUTATION = gql`
         body
         createdAt
         username
-       
+       replies
       }
       commentCount
+    likeCount
     }
   }
 `;
 const REPLY_COMMENT_MUTATION = gql`
 mutation($newReply: String!,$postId: ID!,$commentId: ID!) {
 replyComment(newReply:$newReply,postId:$postId,commentId:$commentId) {
- replies  
-}
-}
+id
+  }
+  }
 `
 const FETCH_POST_QUERY = gql`
   query($postId: ID!) {
@@ -242,7 +244,7 @@ const FETCH_POST_QUERY = gql`
         username
         createdAt
         body
-     replies
+    replies
       }
     }
   }
